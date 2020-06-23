@@ -1,0 +1,4 @@
+title: "$TITLE"
+merge_request: $MERGE_REQUEST
+author: "$AUTHOR"
+type: "$TYPE"
