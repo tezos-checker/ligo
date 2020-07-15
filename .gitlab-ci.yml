@@ -134,8 +134,8 @@ docker-push:
   script:
     - echo ${LIGO_REGISTRY_PASSWORD} | docker login -u ${LIGO_REGISTRY_USER} --password-stdin
     - docker load -i=./ligo.tar.gz
-    - export LIGO_TAG=$(if test "$CI_COMMIT_REF_NAME" = "dev"; then echo next; else if echo "$CI_COMMIT_TAG" | grep "[0-9]+\.[0-9]+\.[0-9]+"; then echo "$CI_COMMIT_TAG" else echo next-attempt; fi)
-    - export LIGO_REGISTRY_FULL_NAME=${LIGO_REGISTRY_IMAGE_BUILD:-ligolang/ligo}:${LIGO_TAG}
+    - if test "$CI_COMMIT_REF_NAME" = "dev"; then export LIGO_TAG=next; else if echo "$CI_COMMIT_TAG" | grep -E "[0-9]+\.[0-9]+\.[0-9]+"; then export LIGO_TAG="$CI_COMMIT_TAG"; else export LIGO_TAG=next-attempt; fi; fi
+    - export LIGO_REGISTRY_FULL_NAME="${LIGO_REGISTRY_IMAGE_BUILD:-ligolang/ligo}:$LIGO_TAG"
     - docker tag ligo "${LIGO_REGISTRY_FULL_NAME}"
     - docker push "${LIGO_REGISTRY_FULL_NAME}"
 
@@ -230,11 +230,7 @@ release:
     paths:
       - ligo
   script:
-    ->
-    release-cli create --name "Release $CI_COMMIT_TAG" --description "$(cat release-notes.md)"
-    --assets-links-name "Static Linux binary" --assets-links-url "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/raw/ligo"
-    --assets-links-name "deb package" --assets-links-url "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/raw/ligo.deb"
-
+    - release-cli create --name "Release $CI_COMMIT_TAG" --description "$(cat release-notes.md)" --assets-links-name "Static Linux binary" --assets-links-url "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/raw/ligo" --assets-links-name "deb package" --assets-links-url "$CI_PROJECT_URL/-/jobs/$CI_JOB_ID/artifacts/raw/ligo.deb"
 
 .website:
   extends: .nix
