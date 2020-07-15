@@ -22,7 +22,7 @@ let
 
   compressBinaries = pkg:
     pkgs.runCommandNoCC "${pkg.name}-compressed" { nativeBuildInputs = [ pkgs.upx ]; }
-      "cp -Lr ${pkg} $out; chmod +w $out/bin/*; upx $out/bin/*";
+      "cp -Lr ${pkg} $out; chmod -R +w $out/bin; upx $out/bin/*";
 
 
   tmp = pkgs.runCommandNoCC "tmpdir" { } "mkdir -p $out/tmp";

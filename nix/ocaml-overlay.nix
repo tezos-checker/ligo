@@ -93,7 +93,7 @@ in {
           else
             "${CI_COMMIT_TAG}";
           inherit CI_COMMIT_TAG CI_COMMIT_SHA COMMIT_DATE;
-          CHANGELOG_PATH = "${self.buildPackages.ligo-changelog}/changelog.txt";
+          CHANGELOG_PATH = builtins.toFile "changelog.txt" (builtins.readFile "${self.buildPackages.ligo-changelog}/changelog.txt");
           buildInputs = oa.buildInputs
             ++ [ oself.UnionFind oself.Preprocessor ];
           nativeBuildInputs = oa.nativeBuildInputs
