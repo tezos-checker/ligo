@@ -70,6 +70,7 @@ module Context_init = struct
           Parameters_repr.{ public_key_hash = pkh ; public_key = Some pk ; amount }
         ) initial_accounts
     in
+    let constants = Constants_repr.{ constants with michelson_maximum_type_size = 65000 } in
     let json =
       Data_encoding.Json.construct
         Parameters_repr.encoding
